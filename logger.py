@@ -11,7 +11,7 @@ def checkFile():
 	dia = time.strftime("%d-%m-%Y") + ".csv"
 	csvf = open(dia, "a+")
 	if os.stat(dia).st_size == 0:
-	  csvf.write("Date,Time,Temperature,BMPTemperature,Humidity,Pressure,CO2\n")
+	  csvf.write("Date-Time,Temperature,BMPTemperature,Humidity,Pressure,CO2\n")
 	  csvf.flush()
 	return csvf
 
@@ -65,7 +65,7 @@ def main():
 				
 				twrite = "Temperature in C: " + str(tempval) + "\n" + "Temperature (by BMP) in C: " + str(tmpval) + "\n" + "Humidity in %: " + str(humdval) + "\n" + "Pressure in Pa: " + str(baroval) + "\n" + "CO2 concentration in ppm: " + str(co2val)
 				
-				pwrite = time.strftime("%d-%m-%Y") + "," + spt[3] + "," + str(tempval) + "," + str(tmpval) + "," + str(humdval) + "," + str(baroval) + "," + str(co2val) + "\n"
+				pwrite = time.strftime("%d-%m-%Y") + " " + spt[3] + "," + str(tempval) + "," + str(tmpval) + "," + str(humdval) + "," + str(baroval) + "," + str(co2val) + "\n"
 				
 				selfil.write(pwrite)
 				selfil.flush()				
