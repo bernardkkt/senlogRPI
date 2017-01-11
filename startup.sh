@@ -17,4 +17,4 @@ echo Success!
 sudo gpsd /dev/ttyS0 -n
 echo The script will now proceed to logging task.
 cd LOGGING
-sudo python mainlog.py
+sudo python logger.py
