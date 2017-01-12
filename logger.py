@@ -1,4 +1,4 @@
-import time, pigpio, os
+import time, pigpio, os, gps
 from sht1x.Sht1x import Sht1x as SHT1x
 import Adafruit_BMP.BMP085 as BMP180
 
@@ -6,12 +6,25 @@ tempdataPin = 11
 tempclkPin = 7
 ins2rd = [0x22, 0x00, 0x08, 0x2A]
 samplingtime = 10
+gpsd = None
+
+class GpsPoller(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
+		global gpsd
+		gpsd = gps(mode=WATCH_ENABLE)
+		self.current_value = None
+		self.running = True
+	def run(self):
+		global gpsd
+		while gpsp.running:
+			gpsd.next()
 
 def checkFile():
 	dia = time.strftime("%d-%m-%Y") + ".csv"
 	csvf = open(dia, "a+")
 	if os.stat(dia).st_size == 0:
-	  csvf.write("Date-Time,Temperature,BMPTemperature,Humidity,Pressure,CO2\n")
+	  csvf.write("Date-Time,Latitute,Longitude,Temperature,BMPTemperature,Humidity,Pressure,CO2\n")
 	  csvf.flush()
 	return csvf
 
@@ -39,6 +52,8 @@ def gBaro(mano):
 
 def main():
 	#Initialisation
+	gpsp = GpsPoller()
+	gpsp.start()
 	pi = pigpio.pi()
 	co2 = pi.i2c_open(1, 0x68)
 	sht71 = SHT1x(tempdataPin, tempclkPin, SHT1x.GPIO_BOARD)
@@ -58,6 +73,8 @@ def main():
 				timestamp = time.ctime(ct)
 				spt = timestamp.split()
 				
+				lati = gpsd.fix.latitude
+				longi = gpsd.fix.longitude
 				baroval, tmpval = gBaro(bsense)
 				tempval = sht71.read_temperature_C()
 				humdval = sht71.read_humidity()				
@@ -65,7 +82,7 @@ def main():
 				
 				twrite = "Temperature in C: " + str(tempval) + "\n" + "Temperature (by BMP) in C: " + str(tmpval) + "\n" + "Humidity in %: " + str(humdval) + "\n" + "Pressure in Pa: " + str(baroval) + "\n" + "CO2 concentration in ppm: " + str(co2val)
 				
-				pwrite = time.strftime("%d-%m-%Y") + " " + spt[3] + "," + str(tempval) + "," + str(tmpval) + "," + str(humdval) + "," + str(baroval) + "," + str(co2val) + "\n"
+				pwrite = time.strftime("%d-%m-%Y") + " " + spt[3] + "," + str(lati) + "," + str(longi) + "," + str(tempval) + "," + str(tmpval) + "," + str(humdval) + "," + str(baroval) + "," + str(co2val) + "\n"
 				
 				selfil.write(pwrite)
 				selfil.flush()				
