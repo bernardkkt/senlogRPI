@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <pigpio.h>
 
-#define sckP 23
-#define dtaP 24
-#define SHT1x_SCK_HI gpioWrite(sckP, 1)
-#define SHT1x_SCK_LO gpioWrite(sckP, 0)
-#define SHT1x_DATA_LO gpioWrite(dtaP, 0);gpioSetMode(dtaP, 1)
-#define	SHT1x_DATA_HI gpioSetMode(dtaP, 0)
-#define SHT1x_GET_BIT gpioRead(dtaP)
+#define sckP	23
+#define dtaP	24
+#define SHT1x_SCK_HI	gpioWrite(sckP, 1)
+#define SHT1x_SCK_LO	gpioWrite(sckP, 0)
+#define SHT1x_DATA_LO	gpioWrite(dtaP, 0);gpioSetMode(dtaP, 1)
+#define	SHT1x_DATA_HI	gpioSetMode(dtaP, 0)
+#define SHT1x_GET_BIT	gpioRead(dtaP)
+#define	TRUE	1
+#define	FALSE	0
 
 unsigned char SHT1x_crc, tHibyte, tLobyte;
 unsigned char SHT1x_status_reg = 0;
