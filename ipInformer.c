@@ -40,9 +40,9 @@ int main(int argc, char **argv)
         printf("%s  %s\n", addr, name);
     }
     
-    printf("Good to go.\n");
     const char *nome = "Bhagavan Ki Jai";
     hci_write_local_name(sock, nome, 0);
+    //Codes referred from hciconfig.c
     ioctl(sock, HCIDEVDOWN, dev_id);
     ioctl(sock, HCIDEVUP, dev_id);
     struct hci_dev_req dr;
@@ -50,6 +50,7 @@ int main(int argc, char **argv)
     dr.dev_opt = SCAN_DISABLED;
     dr.dev_opt = SCAN_PAGE | SCAN_INQUIRY;
     ioctl(sock, HCISETSCAN, (unsigned long) &dr);
+    printf("Good to go.\n");
     getchar();
     
     free( ii );
