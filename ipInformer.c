@@ -1,3 +1,4 @@
+// Compile with -lbluetooth parameter.
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -24,6 +25,7 @@ int main(int argc, char **argv)
 
     const char *nome = argv[1];
     hci_write_local_name(sock, nome, 0);
+    //Code above might be equivalent to "hci_write_local_name(sock, argv[1], 0);"
     //Codes referred from hciconfig.c
     ioctl(sock, HCIDEVDOWN, dev_id);
     ioctl(sock, HCIDEVUP, dev_id);
