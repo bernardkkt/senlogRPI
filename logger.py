@@ -1,6 +1,8 @@
 import time, pigpio, os, gps
 from sht1x.Sht1x import Sht1x as SHT1x
 import Adafruit_BMP.BMP085 as BMP180
+import gps
+import threading
 
 tempdataPin = 11
 tempclkPin = 7

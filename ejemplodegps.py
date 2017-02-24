@@ -6,6 +6,7 @@ alive = True
 
 def startDmn(inhSession):
 	global loc
+	global alive
 	while alive:
 		try:
 			report = inhSession.next()
