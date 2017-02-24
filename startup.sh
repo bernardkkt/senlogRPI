@@ -4,7 +4,8 @@ echo Logging application starting up...
 echo
 echo Retrieving real time from GPS...
 gmode=$(gpspipe -w | head -4 | egrep -o '"mode":+[0-9]' | grep -Po  '"mode":\K[^ ]+')
-while [ "$gmode" = "1" ]; do
+while [[ "$gmode" != "2" ] || [ "$gmode" != "2" ]]
+do
 	echo Still attempting...
 	gmode=$(gpspipe -w | head -4 | egrep -o '"mode":+[0-9]' | grep -Po  '"mode":\K[^ ]+')
 	sleep 1
