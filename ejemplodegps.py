@@ -7,7 +7,7 @@ alive = None
 def startDmn(inhSession):
 	global alive
 	global loc
-	print str(alive)
+	#print str(alive)
 	try:
 		while alive:
 			inhSession.next()
@@ -22,7 +22,7 @@ class GLoc:
 	def getLoc(self):
 		th = threading.Thread(target = startDmn, args = (self.gsession,))
 		th.start()
-		print "done p1"
+		#print "done p1"
 
 def main():
 	global alive
