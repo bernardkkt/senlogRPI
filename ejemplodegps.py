@@ -1,47 +1,46 @@
-import gps
+from gps import *
 import threading
 
-loc = ['','']
-alive = True
+loc = [None]*2
+alive = None
 
 def startDmn(inhSession):
-	global loc
 	global alive
-	while alive:
-		try:
-			report = inhSession.next()
-			if hasattr(report, 'lat') and hasattr(report, 'lon'):
-				loc[0] = report.lat
-				loc[1] = report.lon
-		except:
-			print "Interrupted. Exiting..."
-			break
+	global loc
+	print str(alive)
+	try:
+		while alive:
+			inhSession.next()
+			loc[0] = inhSession.fix.latitude
+			loc[1] = inhSession.fix.longitude
+	except:
+		print "Unexpected error."
 
 class GLoc:
 	def __init__(self):
-		global loc
-		self.session = gps.gps("127.0.0.1", "2947")
-		self.session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
-		
+		self.gsession = gps(mode=WATCH_ENABLE)
 	def getLoc(self):
-		threading.Thread(target = startDmn, args = (self.session,))
+		th = threading.Thread(target = startDmn, args = (self.gsession,))
+		th.start()
+		print "done p1"
 
 def main():
 	global alive
 	global loc
+	alive = True
 	hazel = GLoc()
 	hazel.getLoc()
 	
-	while True:
-		try:
+	try:
+		while True:
 			raw_input("Press enter to get the coordinates.")
 			print str(loc[0]) + ", " + str(loc[1])
 			print
-		except:
-			print "Exiting..."
-			alive = False
+	except:
+		print "Exiting..."
+		alive = False
+	
 	return 0
 
 if __name__ == '__main__':
 	main()
-
