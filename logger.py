@@ -104,7 +104,7 @@ def correct():
 	global sensorData
 	if sensorData[0] != "N/A":
 		correctedVal = sensorData[0] / (sensorData[3] * ((4.026 * 0.001) + (5.780 * 0.00001 * sensorData[3])))
-		correctedVal = -(-correctedVal // 1)
+		correctedVal = int(round(correctedVal))
 	else:
 		correctedVal = "N/A"
 	return correctedVal
