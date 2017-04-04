@@ -100,14 +100,15 @@ def checkFile():
 	  csvf.flush()
 	return csvf
 
-def correct():
-	global sensorData
-	if sensorData[0] != "N/A":
-		correctedVal = sensorData[0] / (sensorData[3] * ((4.026 * 0.001) + (5.780 * 0.00001 * sensorData[3])))
-		correctedVal = int(round(correctedVal))
+def correct(ppm, baro):
+	if ppm != "N/A":
+		baro = baro / 1000.0
+		factor = (4.026 * 0.001 * baro) + (5.780 * 0.00001 * baro * baro)
+		trueVal = ppm / factor
+		trueVal = int(round(trueVal))
 	else:
-		correctedVal = "N/A"
-	return correctedVal
+		trueVal = "N/A"
+	return trueVal
 
 def main():
 	#Initialisation
@@ -128,11 +129,11 @@ def main():
 				timestamp = time.ctime(ct)
 				spt = timestamp.split()
 				allsensors.startThreads()
-				pcomppm = correct()
+				pcomp = correct(sensorData[0], sensorData[3])
 
-				twrite = "Temperature in C: " + str(sensorData[1]) + "\n" + "Temperature (by BMP) in C: " + str(sensorData[4]) + "\n" + "Humidity in %: " + str(sensorData[2]) + "\n" + "Pressure in Pa: " + str(sensorData[3]) + "\n" + "CO2 concentration in ppm: " + str(sensorData[0]) + "Corrected CO2 ppm: " + str(pcomppm)
+				twrite = "Temperature in C: " + str(sensorData[1]) + "\n" + "Temperature (by BMP) in C: " + str(sensorData[4]) + "\n" + "Humidity in %: " + str(sensorData[2]) + "\n" + "Pressure in Pa: " + str(sensorData[3]) + "\n" + "CO2 concentration in ppm: " + str(sensorData[0]) + "Corrected CO2 ppm: " + str(pcomp)
 
-				pwrite = time.strftime("%d-%m-%Y") + " " + spt[3] + "," + str(sensorData[1]) + "," + str(sensorData[4]) + "," + str(sensorData[2]) + "," + str(sensorData[3]) + "," + str(sensorData[0]) + "," + str(pcomppm) + "\n"
+				pwrite = time.strftime("%d-%m-%Y") + " " + spt[3] + "," + str(sensorData[1]) + "," + str(sensorData[4]) + "," + str(sensorData[2]) + "," + str(sensorData[3]) + "," + str(sensorData[0]) + "," + str(pcomp) + "\n"
 
 				selfil.write(pwrite)
 				selfil.flush()
