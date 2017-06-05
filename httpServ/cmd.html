@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<script language="javascript" src="serverDate.js"></script>
+	</head>
+<body>
+<h1>Options</h1>
+<p><form action="cgi-bin/shutdown.cgi"><input type="submit" value="Shutdown" /></form></p>
+<p><form action="cgi-bin/reboot.cgi"><input type="submit" value="Reboot" /></form></p>
+<p><form action="cgi-bin/time.cgi"><input type="submit" value="Update time from internet" /></form></p>
+<p>Current server time: </p>
+<p id="placetime"></p>
+<p><form action="cgi-bin/run.cgi"><input type="submit" value="Start Logger" /></form></p>
+<p><form action="cgi-bin/stop.cgi"><input type="submit" value="Stop Logger" /></form></p>
+
+<script>
+document.getElementById("placetime").innerHTML = date;
+</script>
+</body>
+</html>
