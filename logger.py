@@ -1,4 +1,5 @@
 import time, pigpio, os, threading, sys
+from gps import *
 from sht1x.Sht1x import Sht1x as SHT1x
 import Adafruit_BMP.BMP085 as BMP180
 
@@ -6,7 +7,8 @@ tempdataPin = 11
 tempclkPin = 7
 ins2rd = [0x22, 0x00, 0x08, 0x2A]
 samplingtime = 10
-sensorData = [None]*5
+sensorData = [None]*7
+alive = None
 
 class Sensors:
 	def __init__(self):
@@ -26,7 +28,22 @@ class Sensors:
 			if mark is not 1:
 				self.pi.stop()
 			sys.exit(0)
-
+	
+	def startGPS(self):
+		try:
+			self.gsession = gps(mode=WATCH_ENABLE)
+			sFlag = True
+		except:
+			print "Cannot initialise GPS backend. GPS data might be unavailable."
+		
+		if sFlag is True:
+			th = threading.Thread(target = startDmn, args = (self.gsession,))
+			th.start()			
+		else:
+			global sensorData
+			sensorData[5] = "N/A"
+			sensorData[6] = "N/A"
+		
 	def startThreads(self):
 		try:
 			th1 = threading.Thread(target=gCO2, args=(self.pi, self.k30,))
@@ -49,6 +66,21 @@ class Sensors:
 			self.pi.stop()
 			sys.exit(0)
 
+def startDmn(inhSession):
+	global sensorData
+	global alive
+	sensorData[5] = "N/A"
+	sensorData[6] = "N/A"
+	while alive:
+		try:
+			inhSession.next()
+			sensorData[5] = inhSession.fix.latitude
+			sensorData[6] = inhSession.fix.longitude
+		except:
+			sensorData[5] = "N/A"
+			sensorData[6] = "N/A"
+		time.sleep(0.000001)
+
 def gCO2(mano, enu):
 	try:
 		mano.i2c_write_device(enu, ins2rd)
@@ -58,12 +90,12 @@ def gCO2(mano, enu):
 		if taf[3] == ((taf[0]+taf[1]+taf[2])%256):
 			ccVal = (taf[1]*256) + taf[2]
 		else:
-			ccVal = "N/A"
+			ccVal = "-1"
 
 		if ccVal > 10000:
-			ccVal = "N/A"
+			ccVal = "-2"
 	except:
-		ccVal = "N/A"
+		ccVal = "-3"
 
 	global sensorData
 	sensorData[0] = ccVal
@@ -96,15 +128,15 @@ def checkFile():
 	dia = time.strftime("%d-%m-%Y") + ".csv"
 	csvf = open(dia, "a+")
 	if os.stat(dia).st_size == 0:
-	  csvf.write("Date and Time,Temperature,BMPTemperature,Humidity,Pressure,CO2,Corrected CO2\n")
+	  csvf.write("Date and Time,Temperature,BMPTemperature,Humidity,Pressure,CO2,Corrected CO2,Latitude,Longitude\n")
 	  csvf.flush()
 	return csvf
 
-def correct(ppm, baro):
-	if ppm != "N/A":
-		baro = baro / 1000.0
-		factor = (4.026 * 0.001 * baro) + (5.780 * 0.00001 * baro * baro)
-		trueVal = ppm / factor
+def correct(inpppm, inpbaro):
+	if int(inpppm) >= 0:
+		inpbaro = inpbaro / 1000.0
+		factor = (4.026 * 0.001 * inpbaro) + (5.780 * 0.00001 * inpbaro * inpbaro)
+		trueVal = inpppm / factor
 		trueVal = int(round(trueVal))
 	else:
 		trueVal = "N/A"
@@ -114,6 +146,7 @@ def main():
 	#Initialisation
 	global sensorData
 	allsensors = Sensors()
+	allsensors.startGPS()
 	selfil = checkFile()
 
 	#Initiate with start time
@@ -131,9 +164,9 @@ def main():
 				allsensors.startThreads()
 				pcomp = correct(sensorData[0], sensorData[3])
 
-				twrite = "Temperature in C: " + str(sensorData[1]) + "\n" + "Temperature (by BMP) in C: " + str(sensorData[4]) + "\n" + "Humidity in %: " + str(sensorData[2]) + "\n" + "Pressure in Pa: " + str(sensorData[3]) + "\n" + "CO2 concentration in ppm: " + str(sensorData[0]) + "Corrected CO2 ppm: " + str(pcomp)
+				twrite = "Temperature in C: " + str(sensorData[1]) + "\n" + "Temperature (by BMP) in C: " + str(sensorData[4]) + "\n" + "Humidity in %: " + str(sensorData[2]) + "\n" + "Pressure in Pa: " + str(sensorData[3]) + "\n" + "CO2 concentration in ppm: " + str(sensorData[0]) + "\n" + "Corrected CO2 ppm: " + str(pcomp) + "\n" + "Latitude: " + str(sensorData[5]) + "\n" + "Longitude: " + str(sensorData[6])
 
-				pwrite = time.strftime("%d-%m-%Y") + " " + spt[3] + "," + str(sensorData[1]) + "," + str(sensorData[4]) + "," + str(sensorData[2]) + "," + str(sensorData[3]) + "," + str(sensorData[0]) + "," + str(pcomp) + "\n"
+				pwrite = time.strftime("%d-%m-%Y") + " " + spt[3] + "," + str(sensorData[1]) + "," + str(sensorData[4]) + "," + str(sensorData[2]) + "," + str(sensorData[3]) + "," + str(sensorData[0]) + "," + str(pcomp) + "," + str(sensorData[5]) + "," + str(sensorData[6]) + "\n"
 
 				selfil.write(pwrite)
 				selfil.flush()
