@@ -1,20 +1,5 @@
 #!/bin/bash
-echo Welcome.
-echo This application will insert a timestamp to a file for every execution.
-echo 
-echo Cheking files...
-fname="log.txt"
-if [ -e "$fname" ]
-then
-	echo File exists.
-else
-	echo File N/A.
-	echo Creating new files...
-	touch $fname
-	echo
-fi
-echo Retrieving date...
-gdate=$(date --iso-8601=seconds)
-echo "$gdate"
-echo "$gdate" >> log.txt
-exit
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+bash /home/pi/senlogRPI/icheckforipchange.sh &
+bash /home/pi/senlogRPI/runServer.sh &
+bash /home/pi/senlogRPI/runGPS.sh &
