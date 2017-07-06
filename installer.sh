@@ -1,6 +1,4 @@
 #!/bin/bash
-cd /home/ubuntu
-#cd /home/pi
 echo -e "Welcome.\n"
 echo -e "This script will set up the system for the data logging \nsoftware to work.\n"
 echo -e "Checking file's integrity..."
@@ -16,6 +14,8 @@ sudo cp /etc/rc.local /etc/rc.local.bak
 cp /etc/rc.local rc.local
 sed -i '$i \sudo bash /home/pi/senlogRPI/startup.sh &' rc.local
 sudo mv -f rc.local /etc/rc.local
+sudo systemctl stop ntp
+sudo systemctl disable ntp
 echo Compiling executable...
 sudo apt-get install libbluetooth-dev -y
 gcc senlogRPI/ipInformer.c -lbluetooth -o senlogRPI/ipInformer
