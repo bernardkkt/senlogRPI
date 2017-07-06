@@ -1,5 +1,7 @@
 #!/bin/bash
 cd /home/pi
+#mkdir LOGGING
+#cp /home/pi/senlogRPI/logger.py /home/pi/LOGGING/logger.py
 echo -e "Welcome.\n"
 echo -e "This script will set up the system for the data logging \nsoftware to work.\n"
 echo -e "Checking file's integrity..."
