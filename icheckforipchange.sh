@@ -1,5 +1,8 @@
 #!/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+cd /home/pi/senlogRPI/httpServ
+python -m CGIHTTPServer 8080 &
+cd ..
 function getName {
 	currentIP=$(ifconfig wlan | sed -n 's/.*inet addr:\(.*\)Bcast:.*/\1/p')
 	nome="DevIP: ${currentIP// }"
@@ -8,7 +11,7 @@ function getName {
 		echo "Seems like there's no internet connection at the moment."
 		nome="DevIP:N/A"
 	fi
-	sudo /home/pi/Bluetooth/ipInformer "$nome"
+	sudo /home/pi/senlogRPI/ipInformer "$nome"
 	echo $nome
 	echo
 }
