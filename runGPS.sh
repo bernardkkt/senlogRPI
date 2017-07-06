@@ -4,7 +4,6 @@ echo
 echo Logging application starting up...
 echo
 echo Retrieving real time from GPS...
-sudo gpsd /dev/ttyS0 -n
 gmode=$(gpspipe -w -n 5 | sed -n -e 's/.*mode":\(.*\),"time.*/\1/p' | sed -n 1p)
 until [[ "$gmode" = "2" ]] || [[ "$gmode" = "3" ]]; do
 	echo Still attempting...
@@ -13,10 +12,10 @@ until [[ "$gmode" = "2" ]] || [[ "$gmode" = "3" ]]; do
 done
 echo Changing system time...
 sudo killall gpsd
-sudo /home/pi/senlogRPI/gpsdate /dev/ttyS0
+sudo /home/pi/gpsdate/gpsdate /dev/ttyS0
 echo
 echo Success!
 sudo gpsd /dev/ttyS0 -n
 echo The script will now proceed to logging task.
-cd LOGGING
-#sudo python testsrv.py
+cd /home/pi/LOGGING
+sudo python logger.py
