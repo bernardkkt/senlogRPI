@@ -1,4 +1,5 @@
 #!/bin/bash
+cd /home/pi
 echo -e "Welcome.\n"
 echo -e "This script will set up the system for the data logging \nsoftware to work.\n"
 echo -e "Checking file's integrity..."
@@ -17,6 +18,9 @@ sudo mv -f rc.local /etc/rc.local
 sudo systemctl stop ntp
 sudo systemctl disable ntp
 echo Compiling executable...
+git clone https://github.com/adamheinrich/gpsdate
+cd gpsdate
+make all
 sudo apt-get install libbluetooth-dev -y
 gcc senlogRPI/ipInformer.c -lbluetooth -o senlogRPI/ipInformer
 if [ -e senlogRPI/ipInformer ]
