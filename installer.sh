@@ -18,16 +18,16 @@ sudo mv -f rc.local /etc/rc.local
 sudo systemctl stop ntp
 sudo systemctl disable ntp
 echo Compiling executable...
-git clone https://github.com/adamheinrich/gpsdate
-cd gpsdate
-make all
 sudo apt-get install libbluetooth-dev -y
-gcc senlogRPI/ipInformer.c -lbluetooth -o senlogRPI/ipInformer
-if [ -e senlogRPI/ipInformer ]
+gcc /home/pi/senlogRPI/ipInformer.c -lbluetooth -o /home/pi/senlogRPI/ipInformer
+if [ -e /home/pi/senlogRPI/ipInformer ]
 then
 	echo -e "Blutooth name changing utility is now ready."
 else
 	echo -e "Error: Unable to create executable file. Please contact \nyour software support team."
 	exit
 fi
+git clone https://github.com/adamheinrich/gpsdate
+cd gpsdate
+make all
 echo Exiting...
