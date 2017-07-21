@@ -35,4 +35,6 @@ fi
 git clone https://github.com/adamheinrich/gpsdate
 cd gpsdate
 make all
+sudo systemctl stop gpsd.socket
+sudo systemctl disable gpsd.socket
 echo Exiting...
