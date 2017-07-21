@@ -41,8 +41,8 @@ class Sensors:
 			th.start()			
 		else:
 			global sensorData
-			sensorData[5] = "N/A"
-			sensorData[6] = "N/A"
+			sensorData[5] = "E1"
+			sensorData[6] = "E1"
 		
 	def startThreads(self):
 		try:
@@ -63,14 +63,17 @@ class Sensors:
 			sys.exit(0)
 
 	def cleanExit(self):
+			global alive
+			alive = False
 			self.pi.stop()
 			sys.exit(0)
 
 def startDmn(inhSession):
 	global sensorData
 	global alive
-	sensorData[5] = "N/A"
-	sensorData[6] = "N/A"
+	alive = True
+	sensorData[5] = "E2"
+	sensorData[6] = "E2"
 	while alive:
 		try:
 			inhSession.next()
