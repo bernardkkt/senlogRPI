@@ -1,5 +1,7 @@
 #!/bin/bash
 cd /home/pi
+sudo chmod a+rw /home/pi/senlogRPI/ -R
+ln -s /home/pi/LOGGING/ /home/pi/senlogRPI/httpServ/LOGGING/
 #mkdir LOGGING
 #cp /home/pi/senlogRPI/logger.py /home/pi/LOGGING/logger.py
 echo -e "Welcome.\n"
