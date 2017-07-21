@@ -21,7 +21,8 @@ sudo systemctl stop ntp
 sudo systemctl disable ntp
 echo Compiling executable...
 sudo apt-get install libbluetooth-dev -y
-gcc /home/pi/senlogRPI/ipInformer.c -lbluetooth -o /home/pi/senlogRPI/ipInformer
+sudo gcc /home/pi/senlogRPI/ipInformer.c -lbluetooth -o /home/pi/senlogRPI/ipInformer
+sudo chmod a+rwx /home/pi/senlogRPI/ipInformer
 if [ -e /home/pi/senlogRPI/ipInformer ]
 then
 	echo -e "Blutooth name changing utility is now ready."
