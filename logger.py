@@ -32,8 +32,6 @@ class Sensors:
 	def startGPS(self):
 		try:
 			self.gsession = gps(mode=WATCH_ENABLE)
-			global alive
-			alive = True
 			sFlag = True
 		except:
 			print "Cannot initialise GPS backend. GPS data might be unavailable."
@@ -65,14 +63,15 @@ class Sensors:
 			sys.exit(0)
 
 	def cleanExit(self):
-			self.pi.stop()
 			global alive
 			alive = False
+			self.pi.stop()
 			sys.exit(0)
 
 def startDmn(inhSession):
 	global sensorData
 	global alive
+	alive = True
 	sensorData[5] = "E2"
 	sensorData[6] = "E2"
 	while alive:
