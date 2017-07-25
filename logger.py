@@ -30,8 +30,10 @@ class Sensors:
 			sys.exit(0)
 	
 	def startGPS(self):
+		sFlag = False
 		try:
 			self.gsession = gps(mode=WATCH_ENABLE)
+			global sFlag
 			sFlag = True
 		except:
 			print "Cannot initialise GPS backend. GPS data might be unavailable."
