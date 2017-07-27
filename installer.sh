@@ -23,7 +23,7 @@ sudo mv -f rc.local /etc/rc.local
 sudo systemctl stop ntp
 sudo systemctl disable ntp
 echo Compiling executable...
-sudo apt-get install libbluetooth-dev -y
+sudo apt-get install rdate libbluetooth-dev -y
 sudo gcc /home/pi/senlogRPI/ipInformer.c -lbluetooth -o /home/pi/senlogRPI/ipInformer
 sudo chmod a+rwx /home/pi/senlogRPI/ipInformer
 if [ -e /home/pi/senlogRPI/ipInformer ]
