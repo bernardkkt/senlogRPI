@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo pkill -e -f logger.py
-bash /home/pi/httpServ/cgi-bin/runlogger.sh &
+bash /home/pi/senlogRPI/httpServ/cgi-bin/runlogger.sh &
 
 echo "Content-Type: text/html"
 echo
