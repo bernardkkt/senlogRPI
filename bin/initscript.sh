@@ -1,4 +1,6 @@
 #!/bin/bash
+set -x
+set -e
 
 export DEBIAN_FRONTEND="noninteractive"
 # This script configures Raspbian to work properly with the sensors.
