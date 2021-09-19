@@ -8,7 +8,7 @@ function getName {
 		echo "Seems like there's no internet connection at the moment."
 		nome="DevIP:N/A"
 	fi
-	sudo /home/pi/Bluetooth/ipInformer "$nome"
+	sudo /home/pi/senlogRPI/ipInformer "$nome"
 	echo $nome
 	echo
 }
