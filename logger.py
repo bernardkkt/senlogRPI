@@ -30,10 +30,8 @@ class Sensors:
 			sys.exit(0)
 	
 	def startGPS(self):
-		sFlag = False
 		try:
 			self.gsession = gps(mode=WATCH_ENABLE)
-			global sFlag
 			sFlag = True
 		except:
 			print "Cannot initialise GPS backend. GPS data might be unavailable."
@@ -43,8 +41,8 @@ class Sensors:
 			th.start()			
 		else:
 			global sensorData
-			sensorData[5] = "E1"
-			sensorData[6] = "E1"
+			sensorData[5] = "N/A"
+			sensorData[6] = "N/A"
 		
 	def startThreads(self):
 		try:
@@ -65,17 +63,14 @@ class Sensors:
 			sys.exit(0)
 
 	def cleanExit(self):
-			global alive
-			alive = False
 			self.pi.stop()
 			sys.exit(0)
 
 def startDmn(inhSession):
 	global sensorData
 	global alive
-	alive = True
-	sensorData[5] = "E2"
-	sensorData[6] = "E2"
+	sensorData[5] = "N/A"
+	sensorData[6] = "N/A"
 	while alive:
 		try:
 			inhSession.next()

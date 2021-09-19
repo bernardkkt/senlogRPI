@@ -16,7 +16,7 @@ sudo killall gpsd
 sudo /home/pi/gpsdate/gpsdate /dev/ttyS0
 echo
 echo Success!
-#sudo gpsd /dev/ttyS0 -n
+sudo gpsd /dev/ttyS0 -n
 #echo The script will now proceed to logging task.
 #cd /home/pi/LOGGING
 #sudo python logger.py
