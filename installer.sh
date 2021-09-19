@@ -1,41 +1,49 @@
 #!/bin/bash
-cd /home/pi
-sudo chmod a+rw /home/pi/senlogRPI/ -R
-sudo chmod a+x /home/pi/senlogRPI/httpServ -R
-ln -s /home/pi/LOGGING/ /home/pi/senlogRPI/httpServ/LOGGING/
-#mkdir LOGGING
-#cp /home/pi/senlogRPI/logger.py /home/pi/LOGGING/logger.py
-echo -e "Welcome.\n"
-echo -e "This script will set up the system for the data logging \nsoftware to work.\n"
-echo -e "Checking file's integrity..."
-if [ "`tail -n1 /etc/rc.local`" = "exit 0" ]
-then
-	echo -e "The script is ready to proceed."
-else
-	echo -e "The script cannot proceed to the next step. Please contact \nyour software support team."
-	exit
-fi
-echo Modifying...
-sudo cp /etc/rc.local /etc/rc.local.bak
-cp /etc/rc.local rc.local
-sed -i '$i \sudo bash /home/pi/senlogRPI/startup.sh &' rc.local
-sudo mv -f rc.local /etc/rc.local
-sudo systemctl stop ntp
-sudo systemctl disable ntp
-echo Compiling executable...
-sudo apt-get install rdate libbluetooth-dev -y
-sudo gcc /home/pi/senlogRPI/ipInformer.c -lbluetooth -o /home/pi/senlogRPI/ipInformer
-sudo chmod a+rwx /home/pi/senlogRPI/ipInformer
-if [ -e /home/pi/senlogRPI/ipInformer ]
-then
-	echo -e "Blutooth name changing utility is now ready."
-else
-	echo -e "Error: Unable to create executable file. Please contact \nyour software support team."
-	exit
-fi
+set -x
+set -e
+
+export DEBIAN_FRONTEND="noninteractive"
+# This script configures Raspbian to work properly with the sensors.
+# Run this script after the fresh installation of Raspbian OS to RPI.
+# This script should be working on Raspbian 8 Jessie
+
+mkdir -p /home/pi/LOGGING/
+ln -s /home/pi/LOGGING/ ${PWD}/httpServ/LOGGING/
+
+sudo cp /boot/config.txt /boot/config.txt-bak
+echo "enable_uart=1" | sudo tee -a /boot/config.txt
+echo "dtparam=i2c_arm_baudrate=8000" | sudo tee -a /boot/config.txt
+
+sudo apt update
+sudo apt install xrdp tightvncserver gpsd-clients python-dev libbluetooth-dev -y
+
+gcc -o ipInformer `realpath ${PWD}/ipInformer.c` -lbluetooth
+mkdir -p /home/pi/Bluetooth
+mv ipInformer /home/pi/Bluetooth/
+
+sudo python -m pip install RPi.GPIO==0.6.2
+sudo python -m pip install Adafruit-PureIO==0.2.1
+sudo python -m pip install Adafruit-GPIO==1.0.3
+sudo python -m pip install Adafruit-BMP==1.5.2
+
+git clone https://bitbucket.org/lunobili/rpisht1x.git /tmp/rpisht1x
+sudo python -m pip install /tmp/rpisht1x/src
+
 git clone https://github.com/adamheinrich/gpsdate
 cd gpsdate
 make all
+
+echo "@reboot sudo pigpiod" >> /tmp/crontask
+echo "@reboot bash `realpath ${PWD}/startup.sh`" >> /tmp/crontask
+crontab /tmp/crontask
+
 sudo systemctl stop gpsd.socket
 sudo systemctl disable gpsd.socket
-echo Exiting...
+sudo systemctl stop ntp
+sudo systemctl disable ntp
+
+chmod a+x ${PWD}/httpServ/cgi-bin/*.cgi
+
+echo ""
+echo "DONE!"
+echo "You may restart your system now."
