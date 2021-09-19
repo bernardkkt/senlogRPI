@@ -35,6 +35,7 @@ sudo python -m pip install /tmp/rpisht1x/src
 git clone https://github.com/adamheinrich/gpsdate
 cd gpsdate
 make all
+cd ..
 
 echo "@reboot sudo pigpiod" >> /tmp/crontask
 echo "@reboot bash `realpath ${PWD}/startup.sh`" >> /tmp/crontask
