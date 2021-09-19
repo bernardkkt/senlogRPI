@@ -10,6 +10,9 @@ export DEBIAN_FRONTEND="noninteractive"
 mkdir -p /home/pi/LOGGING/
 ln -s /home/pi/LOGGING/ ${PWD}/httpServ/LOGGING/
 
+sudo raspi-config nonint do_serial 1
+sudo raspi-config nonint do_i2c 0
+
 sudo cp /boot/config.txt /boot/config.txt-bak
 echo "enable_uart=1" | sudo tee -a /boot/config.txt
 echo "dtparam=i2c_arm_baudrate=8000" | sudo tee -a /boot/config.txt
