@@ -8,7 +8,7 @@ export DEBIAN_FRONTEND="noninteractive"
 # This script should be working on Raspbian 8 Jessie
 
 mkdir -p /home/pi/LOGGING/
-ln -s /home/pi/LOGGING/ ${PWD}/httpServ/LOGGING/
+ln -s /home/pi/LOGGING ${PWD}/httpServ/LOGGING
 
 sudo raspi-config nonint do_serial 1
 sudo raspi-config nonint do_i2c 0
