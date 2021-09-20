@@ -9,6 +9,7 @@ export DEBIAN_FRONTEND="noninteractive"
 
 mkdir -p /home/pi/LOGGING/
 ln -s /home/pi/LOGGING ${PWD}/httpServ/LOGGING
+cp ${PWD}/logger.py /home/pi/LOGGING/
 
 sudo raspi-config nonint do_serial 1
 sudo raspi-config nonint do_i2c 0
@@ -18,7 +19,7 @@ echo "enable_uart=1" | sudo tee -a /boot/config.txt
 echo "dtparam=i2c_arm_baudrate=8000" | sudo tee -a /boot/config.txt
 
 sudo apt update
-sudo apt install xrdp tightvncserver gpsd-clients python-dev libbluetooth-dev -y
+sudo apt install xrdp tightvncserver rdate gpsd-clients python-dev libbluetooth-dev -y
 
 gcc -o ipInformer `realpath ${PWD}/ipInformer.c` -lbluetooth
 mkdir -p /home/pi/Bluetooth
