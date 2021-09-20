@@ -30,6 +30,7 @@ class Sensors:
 			sys.exit(0)
 	
 	def startGPS(self):
+		sFlag = False
 		try:
 			self.gsession = gps(mode=WATCH_ENABLE)
 			sFlag = True
@@ -128,8 +129,8 @@ def checkFile():
 	dia = time.strftime("%d-%m-%Y") + ".csv"
 	csvf = open(dia, "a+")
 	if os.stat(dia).st_size == 0:
-	  csvf.write("Date and Time,Temperature,BMPTemperature,Humidity,Pressure,CO2,Corrected CO2,Latitude,Longitude\n")
-	  csvf.flush()
+		csvf.write("Date and Time,Temperature,BMPTemperature,Humidity,Pressure,CO2,Corrected CO2,Latitude,Longitude\n")
+		csvf.flush()
 	return csvf
 
 def correct(inpppm, inpbaro):
